@@ -29,18 +29,6 @@ class RewardModelDataset(Dataset):
                 return len(numbers)  # Insert at the end
             else:
                 return bisect_left(numbers, x)
-            
-        def numerical_to_one_hot(target):
-            # Convert numerical target to one-hot encoding
-            if target == -1:
-                return torch.tensor([1, 0, 0], dtype=torch.float32)
-            elif target == 0:
-                return torch.tensor([0, 1, 0], dtype=torch.float32)
-            elif target == 1:
-                return torch.tensor([0, 0, 1], dtype=torch.float32)
-            else:
-                return torch.tensor([0, 1, 0], dtype=torch.float32)
-     
         
         for idx in tqdm(range(self.total_length)):
             slot_idx = find_pos(self.slots, idx)
@@ -60,7 +48,7 @@ class RewardModelDataset(Dataset):
             final_ctx = random.choice(steps[-1]["completions"])
 
             context += f"  [SEP]{final_ctx['text']} <[RATING]>"
-            target = numerical_to_one_hot(final_ctx['rating'])
+            target = ({-1: 0.0, 0: 0.5, 1: 1.0 }.get(final_ctx['rating'], 0.0)*idx)/self.total_length # trick to convert feedback to reward
             self.ctx_target_pairs.append({"context": context, "target": target})
 
 
@@ -71,6 +59,9 @@ class RewardModelDataset(Dataset):
 
     def __len__(self):
         return self.total_length
+
+    def __getitem__(self, idx):
+        return self.ctx_target_pairs[idx]
 
     def __getitem__(self, idx):
         return self.ctx_target_pairs[idx]
