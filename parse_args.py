@@ -189,20 +189,10 @@ def parse_args():
         help="Number of updates steps to accumulate before perform a backward/update pass.",
     )
     parser.add_argument("--output_dir", type=str, default=None, help="Where to store the final model.")
-    parser.add_argument("--seed", type=int, default=0, help="Random seed for reproducible training.")
-    parser.add_argument(
-        "--model_type", type=str, default=None,
-        help="Model type to use if training from scratch.",
-        choices=MODEL_TYPES,
-    )
+    parser.add_argument( "--model_type", type=str, default=None, help="Model type to use if training from scratch.", choices=MODEL_TYPES, )
     ############################################################################################################
-    parser.add_argument(
-        "--device", type=str,
-        default=torch.device("cuda" if torch.cuda.is_available() else "cpu"), help="Device for model training"
-    )
-    parser.add_argument("--use_softplus", type=int, default=1,
-                        help="Whether use `softplus` or `sigmoid` in bounding the output of the reward model")
-    parser.add_argument("--gradient_clip", type=int, default=1)
+    parser.add_argument( "--device", type=str, default=torch.device("cuda" if torch.cuda.is_available() else "cpu"), help="Device for model training" )
+    parser.add_argument("--use_softplus", type=int, default=1, help="Whether use `softplus` or `sigmoid`  for reward model")    parser.add_argument("--gradient_clip", type=int, default=1)
     parser.add_argument("--gradient_clip_norm", type=float, default=5.0)
     parser.add_argument("--rew_num_train_epochs", type=float, default=0.1)
     parser.add_argument("--rew_learning_rate", type=float, default=5e-5)
@@ -218,7 +208,6 @@ def parse_args():
     parser.add_argument("--policy_checkpoint_path", type=str, default=None)
 
     parser.add_argument("--reward_learning_samples", type=int, default=3)
-    parser.add_argument("--agg_func", type=str, default="avg")
     parser.add_argument("--soft_maxmin_temp", type=float, default=2.)
     parser.add_argument("--reinforce_coeff", type=float, default=-1.)       # default: "-1" suppress this loss component
     parser.add_argument("--max_entropy_coeff", type=float, default=-1.)     # default: "-1" suppress this loss component
@@ -247,6 +236,6 @@ def parse_args():
         args.val_max_target_length = args.max_target_length
 
     if args.output_dir is None:
-        args.output_dir = f"./output/Exp{args.expid}/seed{args.seed}"
+        args.output_dir = f"./output/Exp/"
 
     return args
